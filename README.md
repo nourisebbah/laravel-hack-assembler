@@ -20,7 +20,8 @@ public function __construct()
     $this->symbolTable = $this->predefined;
 }
 
-I'm populating the symbol table with the predefined array, since these symbols have fixed memory addresses.
+I'm populating the symbol table with the predefined array,
+since these symbols have fixed memory addresses.
  I also add user-defined symbols dynamically later.
 
 private array $comp = [
@@ -63,7 +64,8 @@ I mapped each assembly mnemonic to its corresponding binary value.
         }, $lines)));
     }
 
-I cleaned the input from comments and whitespace, then run the register function to register labels and the genrate function to generate binary.
+I cleaned the input from comments and whitespace, then run the register function to
+register labels and the genrate function to generate binary.
 
  private function register(array $lines): void
     {
@@ -80,8 +82,10 @@ I cleaned the input from comments and whitespace, then run the register function
             }
         }
     }
- In the register function, I nedded to store labels in the symbol table with their corresponding rom addresses.
- If the line is not a label, I increment the address, since it means it takes up memory space.
+ In the register function, I nedded to store labels in the symbol
+table with their corresponding rom addresses.
+ If the line is not a label, I increment the address,
+since it means it takes up memory space.
 
 private function generate(array $lines): string
     {
@@ -103,8 +107,10 @@ private function generate(array $lines): string
         return implode("\n", $binary);
     }
 
-In the generate function, if it's an A instruction I convert it to a 16-bit binary address.
-Otherwise, it's a C-instruction and I translate it using the comp, dest, and jump mappings.
+In the generate function, if it's an A instruction
+I convert it to a 16-bit binary address.
+Otherwise, it's a C-instruction and I translate it using
+the comp, dest, and jump mappings.
 
 
   private function userSymbol(string $symbol): int
@@ -119,7 +125,8 @@ Otherwise, it's a C-instruction and I translate it using the comp, dest, and jum
         return $this->symbolTable[$symbol];
     }
  If the symbol is a number, I just return it as an integer.
- If it's a variable and not already in the symbol table, I assign it to the next available memory address starting from 16.
+ If it's a variable and not already in the symbol table,
+I assign it to the next available memory address starting from 16.
    private int $nextAddress = 16;
  Then I increment the counter for the next variable.
 
