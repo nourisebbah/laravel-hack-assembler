@@ -1,164 +1,66 @@
-# Nand2Tetris Project 6 – Assembler (Hack)
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-This README documents part of **Project 6 from the Nand2Tetris book**, where I implemented an assembler in PHP/laravel that translates Hack assembly language into binary machine code. Below is the full explanation of how my implementation works.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
----
+## About Laravel
 
-```php
-protected array $symbolTable = [];
- private array $predefined = [
-    'SP' => 0,
-    'LCL' => 1,
-    'ARG' => 2,
-    'THIS' => 3,
-    'THAT' => 4,
-    'R0' => 0,
-   //etc..
-];
-public function __construct()
-{
-    $this->symbolTable = $this->predefined;
-}
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-I'm populating the symbol table with the predefined array,
-since these symbols have fixed memory addresses.
- I also add user-defined symbols dynamically later.
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-private array $comp = [
-    '0' => '0101010',
-    '1' => '0111111',
-    '-1' => '0111010',
-    'D' => '0001100',
-    //etc..
-];
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-private array $dest = [
-    '' => '000',
-    'M' => '001',
-    'D' => '010',
-    //etc..
-];
+## Learning Laravel
 
-private array $jump = [
-    '' => '000',
-    'JGT' => '001',
-    'JEQ' => '010',
-    //etc..
-];
-I mapped each assembly mnemonic to its corresponding binary value.
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
- public function assemble(string $code): string
-    {
-        $lines = explode("\n", $code);
-        $cleaned = $this->cleanLines($lines);
-        $this->register($cleaned);
-        return $this->generate($cleaned);
-    }
-    
-    private function cleanLines(array $lines): array
-    {
-        return array_values(array_filter(array_map(function ($line) {
-            $line = trim($line);
-            return ($line === '' || str_starts_with($line, '//')) ? null : explode('//', $line)[0];
-        }, $lines)));
-    }
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-I cleaned the input from comments and whitespace, then run the register function to
-register labels and the genrate function to generate binary.
+## Laravel Sponsors
 
- private function register(array $lines): void
-    {
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-        $romAddress = 0;  
-        foreach ($lines as $line) {
-            if (preg_match('/^\((.+)\)$/', $line, $matches)) {
-          
-                $this->symbolTable[$matches[1]] = $romAddress;
-             
-            } else {
-               
-                $romAddress++;
-            }
-        }
-    }
- In the register function, I nedded to store labels in the symbol
-table with their corresponding rom addresses.
- If the line is not a label, I increment the address,
-since it means it takes up memory space.
+### Premium Partners
 
-private function generate(array $lines): string
-    {
-       
-        $binary = [];
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[WebReinvent](https://webreinvent.com/)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Jump24](https://jump24.co.uk)**
+- **[Redberry](https://redberry.international/laravel/)**
+- **[Active Logic](https://activelogic.com)**
+- **[byte5](https://byte5.de)**
+- **[OP.GG](https://op.gg)**
 
-        foreach ($lines as $line) {
-            if (preg_match('/^\(.+\)$/', $line)) continue; 
-            if (str_starts_with($line, '@')) { 
-                $symbol = substr($line, 1); //@R0 -> R0
-                $address = $this->userSymbol($symbol);
-           
-                $binary[] = str_pad(decbin($address), 16, '0', STR_PAD_LEFT);
-            } else {
-                $binary[] = '111' . $this->translateCInstruction($line); 
-            }
-        }
+## Contributing
 
-        return implode("\n", $binary);
-    }
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-In the generate function, if it's an A instruction
-I convert it to a 16 bit binary address.
-Otherwise, it's a C instruction and I translate it using
-the comp, dest, and jump mappings.
+## Code of Conduct
 
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-  private function userSymbol(string $symbol): int
-    {
-        if (is_numeric($symbol)) return (int)$symbol;
+## Security Vulnerabilities
 
-      
-        if (!isset($this->symbolTable[$symbol])) {
-            $this->symbolTable[$symbol] = $this->nextAddress++;
-        }
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-        return $this->symbolTable[$symbol];
-    }
- If the symbol is a number, I just return it as an integer.
- If it's a variable and not already in the symbol table,
-I assign it to the next available memory address starting from 16.
-   private int $nextAddress = 16;
- Then I increment the counter for the next variable.
+## License
 
-
-     private function translateCInstruction(string $line): string
-    {
-    $dest = '';
-    $comp = '';
-    $jump = '';
-    if (str_contains($line, '=') && str_contains($line, ';')) {
-        [$destPart, $rest] = explode('=', $line);
-        [$compPart, $jumpPart] = explode(';', $rest);
-        $dest = $destPart;
-        $comp = $compPart;
-        $jump = $jumpPart;
-
-    } elseif (str_contains($line, '=')) {
-        [$dest, $comp] = explode('=', $line);
-
-    } elseif (str_contains($line, ';')) {
-        [$comp, $jump] = explode(';', $line);
-
-    } else {
-        $comp = $line;
-    }
-
-    $compBinary = $this->comp[trim($comp)] ?? '0000000'; 
-    $destBinary = $this->dest[trim($dest)] ?? '000'; 
-    $jumpBinary = $this->jump[trim($jump)] ?? '000'; 
-
-    return $compBinary . $destBinary . $jumpBinary;
-    }
-    I initialized dest, comp, and jump to empty strings in case the instruction lacks some parts.
-Then I handle all 4 possible formats: dest=comp;jump, dest=comp, comp;jump, and only comp.
- Finally, I used the predefined mappings and default to zeros if any part is missing as a safe net.
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
