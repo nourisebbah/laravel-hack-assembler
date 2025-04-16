@@ -108,8 +108,8 @@ private function generate(array $lines): string
     }
 
 In the generate function, if it's an A instruction
-I convert it to a 16-bit binary address.
-Otherwise, it's a C-instruction and I translate it using
+I convert it to a 16 bit binary address.
+Otherwise, it's a C instruction and I translate it using
 the comp, dest, and jump mappings.
 
 
