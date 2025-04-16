@@ -1,8 +1,10 @@
 # Nand2Tetris Project 6 – Assembler (Hack)
 
 This README documents part of **Project 6 from the Nand2Tetris book**, where I implemented an assembler in PHP/laravel that translates Hack assembly language into binary machine code. Below is the full explanation of how my implementation works, written in my own style and notes.
-![Assembler UI](Screenshot.png)
+
+
 ---
+![Preview](Screenshot.png)
 
 ```php
 protected array $symbolTable = [];
