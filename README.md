@@ -22,7 +22,7 @@ public function __construct()
 }
 
 I'm populating the symbol table with the predefined array, since these symbols have fixed memory addresses.
- I also add user-defined symbols dynamically later.
+ I also add user defined symbols dynamically later.
 
 private array $comp = [
     '0' => '0101010',
